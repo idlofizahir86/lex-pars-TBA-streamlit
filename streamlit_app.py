@@ -1,7 +1,8 @@
 import re
 import streamlit as st
+from streamlit import beta_container
 
-keywords = ['if', ':']
+keywords = ['if', ':', '=']
 operators = ['==', '!=', '>', '<', '>=', '<=', '+', '-', '/', '*', 'and', 'or']
 variables = ['a', 'b', 'c']
 hitungan = ['+', '-', '/', '*']
@@ -9,7 +10,7 @@ extra_operator = ['and', 'or']
 
 def lexical_parser(code):
     tokens = []
-    split_code = re.findall(r'\w+|\S', code)  # split program into words and non-whitespace symbols
+    split_code = re.findall(r"\w+|==|!=|>=|<=|\S", code)  # split program into words and non-whitespace symbols
 
     for token in split_code:
         if token in keywords:
@@ -86,17 +87,32 @@ def check_grammar(tokens):
     return "VALID"
 
 def main():
-    st.title("Python Grammar Checker")
-    code = st.text_area("Masukkan program")
+    st.set_page_config(page_title="Python Grammar Checker", page_icon=":memo:", layout="centered", initial_sidebar_state="collapsed")
 
-    if st.button("Check Grammar"):
-        tokens = lexical_parser(code)
+    with beta_container(
+        width="60%",
+        padding="2rem",
+        bg_color="#f9f9f9",
+        corner_radius="1rem",
+        ):
+        st.markdown("# Python Grammar Checker")
+        st.markdown("Enter your program below:")
 
-        for token_type, token in tokens:
-            st.write(f"{token_type} --> {token}")
+        code = st.text_area(label="", height=200)
 
-        result = check_grammar(tokens)
-        st.write("Grammar:", result)
+        if st.button("Check Grammar"):
+            tokens = lexical_parser(code)
+
+            with beta_container(width="100%", padding="1rem", bg_color="#f0f0f0"):
+                for token_type, token in tokens:
+                    st.markdown(f"**{token_type}** --> `{token}`")
+
+            grammar_result = check_grammar(tokens)
+
+            if grammar_result == "VALID":
+                st.success("Grammar is valid! :white_check_mark:")
+            else:
+                st.error("Grammar is not valid! :x:")
 
 if __name__ == "__main__":
     main()
