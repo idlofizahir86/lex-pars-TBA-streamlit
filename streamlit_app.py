@@ -1,8 +1,7 @@
 import streamlit as st
 import re
-
 keywords = ['if', ':', '=']
-operators = ['==', '!=', '>', '<', '>=', '<=', '+', '-', '/', '*', 'and', 'or']
+operators = ['==', '!=', '>', '<', '>=', '<=', '+', '-', '/', '*']
 variables = ['a', 'b', 'c']
 hitungan = ['+', '-', '/', '*']
 extra_operator = ['and', 'or']
@@ -18,11 +17,13 @@ def lexical_parser(code):
             tokens.append(('Operator', token))
         elif token in variables:
             tokens.append(('Variable', token))
+        elif token in extra_operator:
+            tokens.append(('Extra Operator', token))
         else:
             tokens.append(('Unknown', token))
 
     return tokens
-
+    
 def check_grammar(tokens):
     # Grammar checking logic
     if tokens[0][1] != 'if':
@@ -94,11 +95,16 @@ def main():
     st.write("IF <variables> <operators> <variables>:")
     st.write("      <variables> = <variables> <operator> <variables>")
     st.write("")
-    st.write("Variables yang tersedia adalah: a, b, c")
+    st.write("ATAU")
+    st.write("")
+    st.write("IF <variables> <operators> <variables> <extra operator> <variables> <operators> <variables>:")
+    st.write("      <variables> = <variables> <operator> <variables>")
+    st.write("")
+    st.write("Variables yang tersedia adalah: {a, b, c}")
+    st.write("Exta Operator adalah: {and, or}")
     st.write("")
 
     st.write("Masukkan penulisan kondisi IF sesuai Grammar pada kotak di bawah:")
-    
     code = st.text_area("Program Code", height=200)
     if st.button("Check Grammar"):
         tokens = lexical_parser(code)
