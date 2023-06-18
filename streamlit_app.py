@@ -8,7 +8,7 @@ extra_operator = ['and', 'or']
 
 def lexical_parser(code):
     tokens = []
-    split_code = re.findall(r'\w+|==|!=|>|<|>=|<=|\S', code)  # Memperbarui pola regex
+    split_code = re.findall(r'\w+|==|!=|>=|<=|>|<|\S', code)  # Memperbarui pola regex
 
     for token in split_code:
         if token in keywords:
