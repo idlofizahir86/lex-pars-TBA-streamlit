@@ -1,38 +1,102 @@
-from collections import namedtuple
-import altair as alt
-import math
-import pandas as pd
+import re
 import streamlit as st
 
-"""
-# Welcome to Streamlit!
+keywords = ['if', ':']
+operators = ['==', '!=', '>', '<', '>=', '<=', '+', '-', '/', '*', 'and', 'or']
+variables = ['a', 'b', 'c']
+hitungan = ['+', '-', '/', '*']
+extra_operator = ['and', 'or']
 
-Edit `/streamlit_app.py` to customize this app to your heart's desire :heart:
+def lexical_parser(code):
+    tokens = []
+    split_code = re.findall(r'\w+|\S', code)  # split program into words and non-whitespace symbols
 
-If you have any questions, checkout our [documentation](https://docs.streamlit.io) and [community
-forums](https://discuss.streamlit.io).
+    for token in split_code:
+        if token in keywords:
+            tokens.append(('Keyword', token))
+        elif token in operators:
+            tokens.append(('Operator', token))
+        elif token in variables:
+            tokens.append(('Variable', token))
+        else:
+            tokens.append(('Unknown', token))
 
-In the meantime, below is an example of what you can do with just a few lines of code:
-"""
+    return tokens
 
+def check_grammar(tokens):
+    if tokens[0][1] != 'if':
+        return "INVALID"
 
-with st.echo(code_location='below'):
-    total_points = st.slider("Number of points in spiral", 1, 5000, 2000)
-    num_turns = st.slider("Number of turns in spiral", 1, 100, 9)
+    if tokens[1][1] not in variables:
+        return "INVALID"
 
-    Point = namedtuple('Point', 'x y')
-    data = []
+    if tokens[2][1] not in operators:
+        return "INVALID"
 
-    points_per_turn = total_points / num_turns
+    if tokens[3][1] not in variables:
+        return "INVALID"
 
-    for curr_point_num in range(total_points):
-        curr_turn, i = divmod(curr_point_num, points_per_turn)
-        angle = (curr_turn + 1) * 2 * math.pi * i / points_per_turn
-        radius = curr_point_num / total_points
-        x = radius * math.cos(angle)
-        y = radius * math.sin(angle)
-        data.append(Point(x, y))
+    if tokens[4][1] not in extra_operator and tokens[4][1] != ':':
+        return "INVALID"
 
-    st.altair_chart(alt.Chart(pd.DataFrame(data), height=500, width=500)
-        .mark_circle(color='#0068c9', opacity=0.5)
-        .encode(x='x:Q', y='y:Q'))
+    if tokens[4][1] == ':':
+        if tokens[5][1] not in variables:
+            return "INVALID"
+
+        if tokens[6][1] != '=':
+            return "INVALID"
+
+        if tokens[7][1] not in variables:
+            return "INVALID"
+
+        if tokens[8][1] not in hitungan:
+            return "INVALID"
+
+        if tokens[9][1] not in variables:
+            return "INVALID"
+
+    elif tokens[4][1] in extra_operator:
+        if tokens[5][1] not in variables:
+            return "INVALID"
+
+        if tokens[6][1] not in operators:
+            return "INVALID"
+
+        if tokens[7][1] not in variables:
+            return "INVALID"
+
+        if tokens[8][1] != ':':
+            return "INVALID"
+
+        if tokens[9][1] not in variables:
+            return "INVALID"
+
+        if tokens[10][1] != '=':
+            return "INVALID"
+
+        if tokens[11][1] not in variables:
+            return "INVALID"
+
+        if tokens[12][1] not in hitungan:
+            return "INVALID"
+
+        if tokens[13][1] not in variables:
+            return "INVALID"
+
+    return "VALID"
+
+def main():
+    st.title("Python Grammar Checker")
+    code = st.text_area("Masukkan program")
+
+    if st.button("Check Grammar"):
+        tokens = lexical_parser(code)
+
+        for token_type, token in tokens:
+            st.write(f"{token_type} --> {token}")
+
+        result = check_grammar(tokens)
+        st.write("Grammar:", result)
+
+if __name__ == "__main__":
+    main()
