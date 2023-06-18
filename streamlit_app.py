@@ -1,5 +1,6 @@
 import streamlit as st
 import re
+import streamlit_themes
 
 keywords = ['if', ':', '=']
 operators = ['==', '!=', '>', '<', '>=', '<=', '+', '-', '/', '*', 'and', 'or']
@@ -87,6 +88,8 @@ def check_grammar(tokens):
     return "Grammar is valid"
 
 def main():
+    streamlit_themes.set_theme("dark")
+
     st.title("Lexical Parser and Grammar Checker Kondisi IF pada Python")
     st.write("Kelompok 1 - IF-45-10")
     st.write("")
