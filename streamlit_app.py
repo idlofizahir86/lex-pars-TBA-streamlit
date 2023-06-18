@@ -87,8 +87,6 @@ def check_grammar(tokens):
     return "Grammar is valid"
 
 def main():
-    st.set_theme("dark")
-
     st.title("Lexical Parser and Grammar Checker Kondisi IF pada Python")
     st.write("Kelompok 1 - IF-45-10")
     st.write("")
