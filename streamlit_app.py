@@ -1,7 +1,7 @@
 import streamlit as st
 import re
 
-keywords = ['if', ':']
+keywords = ['if', ':', '=']
 operators = ['==', '!=', '>', '<', '>=', '<=', '+', '-', '/', '*', 'and', 'or']
 variables = ['a', 'b', 'c']
 hitungan = ['+', '-', '/', '*']
@@ -87,9 +87,18 @@ def check_grammar(tokens):
     return "Grammar is valid"
 
 def main():
-    st.title("Lexical Parser and Grammar Checker")
-    st.write("Enter a Python program in the text area below:")
+    st.title("Lexical Parser and Grammar Checker Kondisi IF pada Python")
+    st.write("Kelompok 1 - IF-45-10")
+    st.write("")
+    st.write("Rincian Grammar:")
+    st.write("IF <variables> <operators> <variables>:")
+    st.write("      <variables> = <variables> <operator> <variables>")
+    st.write("")
+    st.write("Variables yang tersedia adalah: a, b, c")
+    st.write("")
 
+    st.write("Masukkan penulisan kondisi IF sesuai Grammar pada kotak di bawah:")
+    
     code = st.text_area("Program Code", height=200)
     if st.button("Check Grammar"):
         tokens = lexical_parser(code)
@@ -101,10 +110,10 @@ def main():
 
         if grammar_result == "Grammar is valid":
             st.success("Grammar is valid! ✅")
-            st.write("Your code follows the valid grammar.")
+            st.write("Code yang and masukkan adalah Grammar yang Valid.")
         else:
             st.error("Grammar is not valid! ❌")
-            st.write("Your code does not follow the valid grammar.")
+            st.write("Code yang and masukkan adalah Grammar yang Tidak Valid.")
 
 if __name__ == "__main__":
     main()
