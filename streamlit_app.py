@@ -1,8 +1,7 @@
 import streamlit as st
 import re
-import streamlit_themes
 
-keywords = ['if', ':', '=']
+keywords = ['if', ':']
 operators = ['==', '!=', '>', '<', '>=', '<=', '+', '-', '/', '*', 'and', 'or']
 variables = ['a', 'b', 'c']
 hitungan = ['+', '-', '/', '*']
@@ -88,12 +87,6 @@ def check_grammar(tokens):
     return "Grammar is valid"
 
 def main():
-    st.set_page_config(
-        page_title="Lexical Parser and Grammar Checker",
-        page_icon=":pencil2:",
-        layout="wide"
-    )
-
     st.title("Lexical Parser and Grammar Checker")
     st.write("Enter a Python program in the text area below:")
 
@@ -107,12 +100,11 @@ def main():
         grammar_result = check_grammar(tokens)
 
         if grammar_result == "Grammar is valid":
-            st.success("Grammar is valid! :white_check_mark:")
+            st.success("Grammar is valid! ✅")
             st.write("Your code follows the valid grammar.")
         else:
-            st.error("Grammar is not valid! :x:")
+            st.error("Grammar is not valid! ❌")
             st.write("Your code does not follow the valid grammar.")
 
 if __name__ == "__main__":
-    streamlit_themes.install_theme("monokai")  # Menggunakan tema Monokai
     main()
