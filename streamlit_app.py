@@ -1,6 +1,6 @@
-import re
 import streamlit as st
-from streamlit import beta_container
+import re
+import streamlit_themes
 
 keywords = ['if', ':', '=']
 operators = ['==', '!=', '>', '<', '>=', '<=', '+', '-', '/', '*', 'and', 'or']
@@ -10,7 +10,7 @@ extra_operator = ['and', 'or']
 
 def lexical_parser(code):
     tokens = []
-    split_code = re.findall(r"\w+|==|!=|>=|<=|\S", code)  # split program into words and non-whitespace symbols
+    split_code = re.findall(r'\w+|==|!=|>|<|>=|<=|\S', code)  # Memperbarui pola regex
 
     for token in split_code:
         if token in keywords:
@@ -25,94 +25,94 @@ def lexical_parser(code):
     return tokens
 
 def check_grammar(tokens):
+    # Grammar checking logic
     if tokens[0][1] != 'if':
-        return "INVALID"
-
+        return "Grammar is not valid"
+    
     if tokens[1][1] not in variables:
-        return "INVALID"
-
+        return "Grammar is not valid"
+    
     if tokens[2][1] not in operators:
-        return "INVALID"
-
+        return "Grammar is not valid"
+    
     if tokens[3][1] not in variables:
-        return "INVALID"
-
+        return "Grammar is not valid"
+    
     if tokens[4][1] not in extra_operator and tokens[4][1] != ':':
-        return "INVALID"
-
+        return "Grammar is not valid"
+    
     if tokens[4][1] == ':':
         if tokens[5][1] not in variables:
-            return "INVALID"
-
+            return "Grammar is not valid"
+        
         if tokens[6][1] != '=':
-            return "INVALID"
-
+            return "Grammar is not valid"
+        
         if tokens[7][1] not in variables:
-            return "INVALID"
-
+            return "Grammar is not valid"
+        
         if tokens[8][1] not in hitungan:
-            return "INVALID"
-
+            return "Grammar is not valid"
+        
         if tokens[9][1] not in variables:
-            return "INVALID"
-
+            return "Grammar is not valid"
+    
     elif tokens[4][1] in extra_operator:
         if tokens[5][1] not in variables:
-            return "INVALID"
-
+            return "Grammar is not valid"
+        
         if tokens[6][1] not in operators:
-            return "INVALID"
-
+            return "Grammar is not valid"
+        
         if tokens[7][1] not in variables:
-            return "INVALID"
-
+            return "Grammar is not valid"
+        
         if tokens[8][1] != ':':
-            return "INVALID"
-
+            return "Grammar is not valid"
+        
         if tokens[9][1] not in variables:
-            return "INVALID"
-
+            return "Grammar is not valid"
+        
         if tokens[10][1] != '=':
-            return "INVALID"
-
+            return "Grammar is not valid"
+        
         if tokens[11][1] not in variables:
-            return "INVALID"
-
+            return "Grammar is not valid"
+        
         if tokens[12][1] not in hitungan:
-            return "INVALID"
-
+            return "Grammar is not valid"
+        
         if tokens[13][1] not in variables:
-            return "INVALID"
+            return "Grammar is not valid"
 
-    return "VALID"
+    return "Grammar is valid"
 
 def main():
-    st.set_page_config(page_title="Python Grammar Checker", page_icon=":memo:", layout="centered", initial_sidebar_state="collapsed")
+    st.set_page_config(
+        page_title="Lexical Parser and Grammar Checker",
+        page_icon=":pencil2:",
+        layout="wide"
+    )
 
-    with beta_container(
-        width="60%",
-        padding="2rem",
-        bg_color="#f9f9f9",
-        corner_radius="1rem",
-        ):
-        st.markdown("# Python Grammar Checker")
-        st.markdown("Enter your program below:")
+    st.title("Lexical Parser and Grammar Checker")
+    st.write("Enter a Python program in the text area below:")
 
-        code = st.text_area(label="", height=200)
+    code = st.text_area("Program Code", height=200)
+    if st.button("Check Grammar"):
+        tokens = lexical_parser(code)
 
-        if st.button("Check Grammar"):
-            tokens = lexical_parser(code)
+        for token_type, token in tokens:
+            st.write(f"{token_type} --> `{token}`")
 
-            with beta_container(width="100%", padding="1rem", bg_color="#f0f0f0"):
-                for token_type, token in tokens:
-                    st.markdown(f"**{token_type}** --> `{token}`")
+        grammar_result = check_grammar(tokens)
 
-            grammar_result = check_grammar(tokens)
-
-            if grammar_result == "VALID":
-                st.success("Grammar is valid! :white_check_mark:")
-            else:
-                st.error("Grammar is not valid! :x:")
+        if grammar_result == "Grammar is valid":
+            st.success("Grammar is valid! :white_check_mark:")
+            st.write("Your code follows the valid grammar.")
+        else:
+            st.error("Grammar is not valid! :x:")
+            st.write("Your code does not follow the valid grammar.")
 
 if __name__ == "__main__":
+    streamlit_themes.install_theme("monokai")  # Menggunakan tema Monokai
     main()
